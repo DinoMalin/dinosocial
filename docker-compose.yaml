@@ -4,8 +4,12 @@ services:
     restart: always
     environment:
       POSTGRES_DB: db
-      POSTGRES_USER: dinomalin
+      POSTGRES_USER: root
       POSTGRES_PASSWORD: dino
+    healthcheck:
+      test: pg_isready --dbname=db
+      interval: 2s
+      retries: 10
 
   adminer:
     image: adminer
@@ -19,3 +23,6 @@ services:
       - 3000:3000
     volumes:
       - ./api:/app
+    depends_on:
+      db:
+        condition: service_healthy

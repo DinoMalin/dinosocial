@@ -1,4 +1,6 @@
 const express = require('express');
+const { sequelize, User, Post } = require('./models')
+
 const app = express();
 const port = 3000;
 
@@ -8,23 +10,20 @@ app.get('/', (req, res) => {
   res.send('this is an api');
 });
 
-app.get('/api/users', (req, res) => {
-  res.json([
-    { id: 1, nom: 'Alice' },
-    { id: 2, nom: 'Bob' }
-  ]);
-});
+async function startServer() {
+	try {
+		await sequelize.authenticate();
+		await sequelize.sync();
 
-app.post('/api/users', (req, res) => {
-  const user = req.body;
-  res.status(201).json({ message: 'Data received: ', user });
-});
+		const user = await User.create({ name: 'DinoMalin', bio: 'dinomalining...'});
+		console.log("user created:", user);
 
-app.listen(port, () => {
-  console.log(`Listening on http://localhost:${port}`);
-});
+		app.listen(port, () => {
+		  console.log(`Listening on http://localhost:${port}`);
+		});
+	} catch (err) {
+		console.error("Error:", err);
+	}
+}
 
-
-app.get('/api/hello', (req, res) => {
-	res.send(req);
-})
+startServer();
