@@ -5,7 +5,7 @@ const port = 3000;
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  res.send('Bienvenue sur mon API');
+  res.send('this is an api');
 });
 
 app.get('/api/users', (req, res) => {
@@ -17,11 +17,11 @@ app.get('/api/users', (req, res) => {
 
 app.post('/api/users', (req, res) => {
   const user = req.body;
-  res.status(201).json({ message: 'Utilisateur créé', user });
+  res.status(201).json({ message: 'Data received: ', user });
 });
 
 app.listen(port, () => {
-  console.log(`Serveur démarré sur http://localhost:${port}`);
+  console.log(`Listening on http://localhost:${port}`);
 });
 
 
