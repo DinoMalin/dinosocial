@@ -1,7 +1,7 @@
 all: up
 
 up:
-	docker compose up
+	docker compose watch
 
 down:
 	COMPOSE_PROFILES=test docker compose down --remove-orphans

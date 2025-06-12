@@ -14,9 +14,6 @@ async function startServer() {
 		await sequelize.authenticate();
 		await sequelize.sync();
 
-		const user = await User.create({ name: 'DinoMalin', bio: 'dinomalining...'});
-		console.log("user created:", user);
-
 		app.listen(port, () => {
 		  console.log(`Listening on http://localhost:${port}`);
 		});
