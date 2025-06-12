@@ -4,6 +4,11 @@ up:
 	docker compose up
 
 down:
-	docker compose down --remove-orphans
+	COMPOSE_PROFILES=test docker compose down --remove-orphans
+
+tests:
+	COMPOSE_PROFILES=test docker compose up
 
 re: down up
+
+.PHONY: all up down tests re

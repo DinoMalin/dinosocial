@@ -29,3 +29,17 @@ services:
     environment:
       DB_PASSWORD: ${DB_PASSWORD}
       JWT_PASSWORD: ${JWT_PASSWORD}
+    healthcheck:
+      test: bash /app/api_isready.sh
+      interval: 2s
+      retries: 10
+
+  tests:
+    build: tests
+    volumes:
+      - ./tests:/app
+    depends_on:
+      api:
+        condition: service_healthy
+    profiles:
+      - test

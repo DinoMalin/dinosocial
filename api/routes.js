@@ -1,7 +1,7 @@
 const { createUser } = require('./users');
 
 function basic(req, res) {
-	res.send("you're lost :(");
+	res.status(200).json({ message: "api is on" });
 }
 
 function initRoutes(app) {
