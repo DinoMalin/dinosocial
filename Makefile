@@ -7,7 +7,7 @@ down:
 	COMPOSE_PROFILES=test docker compose down --remove-orphans
 
 tests:
-	COMPOSE_PROFILES=test docker compose up
+	COMPOSE_PROFILES=test docker compose up --abort-on-container-exit --exit-code-from tests
 
 secrets: 
 	bash secrets.sh
