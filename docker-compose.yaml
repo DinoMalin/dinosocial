@@ -5,7 +5,7 @@ services:
     environment:
       POSTGRES_DB: db
       POSTGRES_USER: root
-      POSTGRES_PASSWORD: dino
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
     healthcheck:
       test: pg_isready --dbname=db
       interval: 2s
@@ -26,3 +26,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    environment:
+      DB_PASSWORD: ${DB_PASSWORD}
+      JWT_PASSWORD: ${JWT_PASSWORD}

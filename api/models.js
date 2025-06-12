@@ -1,16 +1,15 @@
+require('dotenv').config();
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('db', 'root', 'dino', {
-	host: 'db',
-  	dialect: 'postgres'
-});
+const sequelize = new Sequelize(
+	'db', 'root', process.env.DB_PASSWORD,
+	{
+		host: 'db',
+  		dialect: 'postgres'
+	}
+);
 
 const User = sequelize.define('User', {
-	id: {
-		type: DataTypes.UUID,
-		defaultValue: DataTypes.UUIDV4,
-		primaryKey: true
-	},
 	name: DataTypes.STRING,
 	avatar: DataTypes.STRING,
 	banner: DataTypes.STRING,
@@ -21,6 +20,11 @@ const User = sequelize.define('User', {
 	posts: DataTypes.ARRAY(DataTypes.INTEGER),
 	likes: DataTypes.ARRAY(DataTypes.INTEGER),
 	reposts: DataTypes.ARRAY(DataTypes.INTEGER),
+	id: {
+		type: DataTypes.UUID,
+		defaultValue: DataTypes.UUIDV4,
+		primaryKey: true
+	},
 });
 
 const Post = sequelize.define('Post', {
