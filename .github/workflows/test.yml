@@ -14,5 +14,8 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: create secrets
+      run: make secrets
+
     - name: API tests
       run: make tests

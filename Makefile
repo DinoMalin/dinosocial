@@ -9,6 +9,9 @@ down:
 tests:
 	COMPOSE_PROFILES=test docker compose up
 
+secrets: 
+	bash secrets.sh
+
 re: down up
 
 .PHONY: all up down tests re
