@@ -1,4 +1,4 @@
-const { createUser } = require('./users');
+const { register, login } = require('./users');
 
 function basic(req, res) {
 	res.status(200).json({ message: "api is on" });
@@ -6,7 +6,8 @@ function basic(req, res) {
 
 function initRoutes(app) {
 	app.get('/', basic);
-	app.post('/register', createUser);
+	app.post('/register', register);
+	app.get('/login', login);
 }
 
 module.exports = initRoutes;

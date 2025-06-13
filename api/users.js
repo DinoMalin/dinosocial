@@ -9,7 +9,7 @@ function passwordPolicy(pw) {
 	return regexp.test(pw);
 }
 
-async function createUser(req, res) {
+async function register(req, res) {
 	try {
 		if (!req.body || !req.body.name || !req.body.password) {
 			throw new Err(400, 'bad request');
@@ -39,4 +39,32 @@ async function createUser(req, res) {
 	}
 }
 
-module.exports = { createUser };
+async function login(req, res) {
+	try {
+		if (!req.query || !req.query.name || !req.query.password) {
+			throw new Err(400, 'bad request');
+		}
+
+		const name = req.query.name;
+		const pw = req.query.password;
+
+		const user = await User.findOne({ where: {name: name}});
+		if (!user) {
+			throw new Err(400, 'invalid username');
+		}
+
+		if (!bcrypt.compareSync(pw, user.password)) {
+			throw new Err(400, 'invalid password');
+		}
+
+		const token = await jwt.sign(
+			{userId: user.id},
+			process.env.JWT_PASSWORD
+		);
+		res.status(200).json({ token: token });
+	} catch (e) {
+		res.status(e.code).json({ error: e.error });
+	}
+}
+
+module.exports = { register, login };
