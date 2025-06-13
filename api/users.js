@@ -67,4 +67,28 @@ async function login(req, res) {
 	}
 }
 
-module.exports = { register, login };
+async function modify(req, res) {
+	try {
+		if (!req.body ||
+			!req.body.name ||
+			!req.body.avatar ||
+			!req.body.banner ||
+			!req.body.bio
+		) {
+			throw new Err(400, 'bad request');
+		}
+
+		await User.update({
+			name: req.body.name,
+			avatar: req.body.avatar,
+			banner: req.body.banner,
+			bio: req.body.bio,
+		}, { where : {id: req.user} })
+
+		res.status(200).json({ message: "success"})
+	} catch (e) {
+		res.status(e.code).json({ error: e.error });
+	}
+}
+
+module.exports = { register, login, modify };

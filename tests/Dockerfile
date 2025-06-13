@@ -4,6 +4,6 @@ WORKDIR /app
 
 COPY . .
 
-RUN apk add --no-cache bash curl
+RUN apk add --no-cache bash curl jq
 
 CMD ["bash", "user.sh"]

@@ -1,11 +1,15 @@
 #!/bin/sh
 
-# test $id $route $test $expected
+# test $id $route $test $expected $header
 function test() {
 	# post request
 	FLAGS=(-s -H "Content-Type: application/json")
 	if [ -n "$3" ]; then
 		FLAGS+=(-d "$3")
+	fi
+
+	if [ -n "$5" ]; then
+		FLAGS+=(-H "$5")
 	fi
 
 	if [ ${#4} = 3 ]; then
@@ -75,3 +79,30 @@ test 15 "login?name=dino&password=thisisapw%216" "" "$EXPECT"
 # 16: invalid password
 EXPECT='{"error":"invalid password"}'
 test 16 "login?name=dinomalin&password=thisisapw" "" "$EXPECT"
+
+## MODIFY
+
+TOKEN=$(curl 'api:3000/login?name=dinomalin&password=thisisapw%216' -s -H "Content-Type:application/json" | jq -r .token)
+
+# 17: basic
+TEST='{"name": "dinomalin", "bio": "dinomalining...", "avatar": "placeholder_link", "banner": "placeholder_link"}'
+EXPECT="200"
+test 17 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 18: unauthorized
+EXPECT="401"
+test 18 "modify" "$TEST" "$EXPECT" "Authorization: Bearer notavalidtoken"
+
+#19: bad request
+TEST='{"bio": "dinomalining...", "avatar": "placeholder_link", "banner": "placeholder_link"}'
+EXPECT='{"error":"bad request"}'
+test 19 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+TEST='{"name": "dinomalin", "avatar": "placeholder_link", "banner": "placeholder_link"}'
+test 20 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+TEST='{"name": "dinomalin", "bio": "dinomalining...", "banner": "placeholder_link"}'
+test 21 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+TEST='{"name": "dinomalin", "bio": "dinomalining...", "avatar": "placeholder_link"}'
+test 22 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
