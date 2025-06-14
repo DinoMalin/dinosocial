@@ -9,17 +9,24 @@ const sequelize = new Sequelize(
 	}
 );
 
+function arrayField(type) {
+	return {
+		type: DataTypes.ARRAY(type),
+		defaultValue: [],
+	};
+}
+
 const User = sequelize.define('User', {
 	name: DataTypes.STRING,
 	avatar: DataTypes.STRING,
 	banner: DataTypes.STRING,
 	bio: DataTypes.STRING,
 	password: DataTypes.STRING,
-	following: DataTypes.ARRAY(DataTypes.UUID),
-	followers: DataTypes.ARRAY(DataTypes.UUID),
-	posts: DataTypes.ARRAY(DataTypes.INTEGER),
-	likes: DataTypes.ARRAY(DataTypes.INTEGER),
-	reposts: DataTypes.ARRAY(DataTypes.INTEGER),
+	following: arrayField(DataTypes.UUID),
+	followers: arrayField(DataTypes.UUID),
+	posts: arrayField(DataTypes.INTEGER),
+	likes: arrayField(DataTypes.INTEGER),
+	reposts: arrayField(DataTypes.INTEGER),
 	id: {
 		type: DataTypes.UUID,
 		defaultValue: DataTypes.UUIDV4,
@@ -30,9 +37,10 @@ const User = sequelize.define('User', {
 const Post = sequelize.define('Post', {
 	content: DataTypes.STRING,
 	author: DataTypes.UUID,
-	likes: DataTypes.ARRAY(DataTypes.UUID),
-	reposts: DataTypes.ARRAY(DataTypes.UUID),
-	answers: DataTypes.ARRAY(DataTypes.UUID),
+	likes: arrayField(DataTypes.UUID),
+	reposts: arrayField(DataTypes.UUID),
+	answers: arrayField(DataTypes.UUID),
+	parent: DataTypes.UUID,
 });
 
 module.exports = {sequelize, User, Post};
