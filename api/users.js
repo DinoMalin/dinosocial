@@ -83,7 +83,7 @@ async function modify(req, res) {
 			avatar: req.body.avatar,
 			banner: req.body.banner,
 			bio: req.body.bio,
-		}, { where : {id: req.user} })
+		}, { where: {id: req.user} })
 
 		res.status(200).json({ message: "success"})
 	} catch (e) {
@@ -91,4 +91,72 @@ async function modify(req, res) {
 	}
 }
 
-module.exports = { register, login, modify };
+async function follow(req, res) {
+	try {
+		if (!req.body || !req.body.name) {
+			throw new Err(400, 'bad request');
+		}
+
+		const userToFollow = await User.findOne({
+			where: {name: req.body.name}
+		});
+		if (!userToFollow) {
+			throw new Err(400, 'invalid username');
+		}
+
+		const user = await User.findOne({
+			where: {id: req.user}
+		});
+		if (user.id == userToFollow.id) {
+			throw new Err(400, 'self follow');
+		}
+		if (user.following.includes(userToFollow.id)) {
+			throw new Err(400, 'already followed');
+		}
+
+		userToFollow.followers = [...userToFollow.followers, user.id];
+		user.following = [...user.following, userToFollow.id];
+		await user.save();
+		await userToFollow.save();
+
+		res.status(200).json({ message: "success" });
+	} catch (e) {
+		res.status(e.code).json({ error: e.error });
+	}
+}
+
+async function unfollow(req, res) {
+	try {
+		if (!req.body || !req.body.name) {
+			throw new Err(400, 'bad request');
+		}
+
+		const userToUnfollow = await User.findOne({
+			where: {name: req.body.name}
+		});
+		if (!userToUnfollow) {
+			throw new Err(400, 'invalid username');
+		}
+	
+		const user = await User.findOne({
+			where: {id: req.user}
+		});
+		if (user.id == userToFollow.id) {
+			throw new Err(400, 'self unfollow');
+		}
+		if (!user.followers.includes(userToUnfollow.id)) {
+			throw new Err(400, 'not followed');
+		}
+
+		userToUnfollow.followers.filter(id => id != user.id);
+		user.following.filter(id => id != userToUnfollow.id);
+		await user.save();
+		await userToFollow.save();
+
+		res.status(200).json({ message: "success" });
+	} catch (e) {
+		res.status(e.code).json({ error: e.error });
+	}
+}
+
+module.exports = { register, login, modify, follow, unfollow };

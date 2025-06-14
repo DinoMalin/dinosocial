@@ -91,9 +91,9 @@ test 17 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
 
 # 18: unauthorized
 EXPECT="401"
-test 18 "modify" "$TEST" "$EXPECT" "Authorization: Bearer notavalidtoken"
+test 18 "modify" "$TEST" "$EXPECT" "Authorization: Bearer invalidtok"
 
-#19: bad request
+# 19: bad request
 TEST='{"bio": "dinomalining...", "avatar": "placeholder_link", "banner": "placeholder_link"}'
 EXPECT='{"error":"bad request"}'
 test 19 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
@@ -106,3 +106,40 @@ test 21 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
 
 TEST='{"name": "dinomalin", "bio": "dinomalining...", "avatar": "placeholder_link"}'
 test 22 "modify" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+## FOLLOW
+
+# 23: create a second user
+TEST='{"name": "dinomalinfriend", "password": "thisisapw!6"}' 
+EXPECT="201"
+test 23 register "$TEST" "$EXPECT"
+
+# 24: basic
+TEST='{"name": "dinomalinfriend"}' 
+EXPECT="200"
+test 24 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 25: unauthorized
+TEST='{"name": "dinomalinfriend"}' 
+EXPECT="401"
+test 25 "follow" "$TEST" "$EXPECT" "Authorization: Bearer invalidtok"
+
+# 26: bad request
+TEST='{}' 
+EXPECT='{"error":"bad request"}'
+test 26 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 27: invalid username
+TEST='{"name": "someone"}' 
+EXPECT='{"error":"invalid username"}'
+test 27 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 28: self follow
+TEST='{"name": "dinomalin"}' 
+EXPECT='{"error":"self follow"}'
+test 28 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 29: already followed
+TEST='{"name": "dinomalinfriend"}' 
+EXPECT='{"error":"already followed"}'
+test 29 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"

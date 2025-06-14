@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const { register, login, modify } = require('./users');
+const { register, login, modify, follow, unfollow } = require('./users');
 
 function authMiddleware(req, res, next) {
 	try {
@@ -23,6 +23,8 @@ function initRoutes(app) {
 	app.post('/register', register);
 	app.get('/login', login);
 	app.post('/modify', authMiddleware, modify)
+	app.post('/follow', authMiddleware, follow)
+	app.post('/unfollow', authMiddleware, unfollow)
 }
 
 module.exports = initRoutes;
