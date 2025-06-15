@@ -1,4 +1,4 @@
-name: Build CI
+name: Tests API
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  tests:
 
     runs-on: ubuntu-22.04
 
