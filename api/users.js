@@ -141,17 +141,19 @@ async function unfollow(req, res) {
 		const user = await User.findOne({
 			where: {id: req.user}
 		});
-		if (user.id == userToFollow.id) {
+		if (user.id == userToUnfollow.id) {
 			throw new Err(400, 'self unfollow');
 		}
-		if (!user.followers.includes(userToUnfollow.id)) {
+		if (!user.following.includes(userToUnfollow.id)) {
 			throw new Err(400, 'not followed');
 		}
 
-		userToUnfollow.followers.filter(id => id != user.id);
-		user.following.filter(id => id != userToUnfollow.id);
+		userToUnfollow.followers = userToUnfollow.followers
+			.filter((id) => {id != user.id});
+		user.following = user.following
+			.filter(id => id != userToUnfollow.id);
 		await user.save();
-		await userToFollow.save();
+		await userToUnfollow.save();
 
 		res.status(200).json({ message: "success" });
 	} catch (e) {

@@ -143,3 +143,35 @@ test 28 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
 TEST='{"name": "dinomalinfriend"}' 
 EXPECT='{"error":"already followed"}'
 test 29 "follow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+## UNFOLLOW
+
+# 30: basic
+TEST='{"name": "dinomalinfriend"}' 
+EXPECT="200"
+test 30 "unfollow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 31: unauthorized
+TEST='{"name": "dinomalinfriend"}' 
+EXPECT="401"
+test 31 "unfollow" "$TEST" "$EXPECT" "Authorization: Bearer invalid"
+
+# 32: bad request
+TEST='{}' 
+EXPECT='{"error":"bad request"}'
+test 32 "unfollow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 33: invalid username
+TEST='{"name": "someone"}' 
+EXPECT='{"error":"invalid username"}'
+test 33 "unfollow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 34: self unfollow
+TEST='{"name": "dinomalin"}' 
+EXPECT='{"error":"self unfollow"}'
+test 34 "unfollow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
+
+# 35: not followed
+TEST='{"name": "dinomalinfriend"}' 
+EXPECT='{"error":"not followed"}'
+test 35 "unfollow" "$TEST" "$EXPECT" "Authorization: Bearer $TOKEN"
