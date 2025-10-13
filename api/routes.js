@@ -1,30 +1,27 @@
-require('dotenv').config();
-const jwt = require('jsonwebtoken');
-const { register, login, modify, follow, unfollow } = require('./users');
+import dotenv from "dotenv";
+import { register, login, modify, follow, unfollow } from "./users.js";
+import { authMiddleware } from "./middlewares.js";
 
-function authMiddleware(req, res, next) {
-	try {
-		const authHeader = req.headers.authorization;
-		const token = authHeader.split(' ')[1];
-		const userId = jwt.verify(token, process.env.JWT_PASSWORD);
-		req.user = userId.userId;
-		next();
-	} catch (e) {
-		return res.status(401).json({ error: "invalid token"});
-	}
-}
+dotenv.config();
 
 function basic(req, res) {
-	res.status(200).json({ message: "api is on" });
+  res.status(200).json({ message: "api is on" });
 }
 
-function initRoutes(app) {
-	app.get('/', basic);
-	app.post('/register', register);
-	app.get('/login', login);
-	app.post('/modify', authMiddleware, modify)
-	app.post('/follow', authMiddleware, follow)
-	app.post('/unfollow', authMiddleware, unfollow)
+function miscellaneous(app) {
+  app.get("/", basic);
 }
 
-module.exports = initRoutes;
+function userRoutes(app) {
+  app.post("/user", register);
+  app.get("/user", login);
+  app.patch("/user", authMiddleware, modify);
+
+  app.post("/follow", authMiddleware, follow);
+  app.post("/unfollow", authMiddleware, unfollow);
+}
+
+export default function initRoutes(app) {
+  miscellaneous(app);
+  userRoutes(app);
+}
