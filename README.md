@@ -63,6 +63,6 @@ DB:
   - Parent -> Post
   - Creation_date -> date
 
-demain: - tests follow/unfollow
-
-remplacer les findOne where id: machin par findbyPk
+TODO:
+- remplacer les findOne where id: XXX par findbyPk
+- validators pour eviter la repetition de conditions
