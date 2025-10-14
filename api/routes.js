@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { register, login, modify, follow, unfollow } from "./users.js";
+import { register, login, getUser, modify, follow, unfollow } from "./users.js";
 import { authMiddleware } from "./middlewares.js";
 
 dotenv.config();
@@ -13,8 +13,10 @@ function miscellaneous(app) {
 }
 
 function userRoutes(app) {
+  app.post("/login", login);
+
   app.post("/user", register);
-  app.get("/user", login);
+  app.get("/user", authMiddleware, getUser);
   app.patch("/user", authMiddleware, modify);
 
   app.post("/follow", authMiddleware, follow);

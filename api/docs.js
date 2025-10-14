@@ -72,21 +72,16 @@
  *         description: Bad request
  *
  *   get:
- *     summary: Login user
+ *     summary: Get an user
  *     parameters:
  *       - in: query
- *         name: name
- *         required: true
- *         schema:
- *           type: string
- *       - in: query
- *         name: password
+ *         name: userId
  *         required: true
  *         schema:
  *           type: string
  *     responses:
  *       200:
- *         description: Success, returns JWT
+ *         description: Success, returns user
  *         content:
  *           application/json:
  *             schema:
@@ -95,7 +90,9 @@
  *                 token:
  *                   type: string
  *       400:
- *         description: Invalid username or password
+ *         description: Bad request
+ *       404:
+ *         description: User not found
  *
  *   patch:
  *     summary: Modify user information
@@ -116,6 +113,33 @@
 
 /**
  * @openapi
+ *   /login:
+ *     post:
+ *       summary: Login user
+ *       parameters:
+ *         - in: query
+ *           name: name
+ *           required: true
+ *           schema:
+ *             type: string
+ *         - in: query
+ *           name: password
+ *           required: true
+ *           schema:
+ *             type: string
+ *       responses:
+ *         200:
+ *           description: Success, returns JWT
+ *           content:
+ *             application/json:
+ *               schema:
+ *                 type: object
+ *                 properties:
+ *                   token:
+ *                     type: string
+ *         400:
+ *           description: Invalid username or password
+ *
  * /follow:
  *   post:
  *     summary: Follow another user

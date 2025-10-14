@@ -39,12 +39,12 @@ export async function register(req, res) {
 
 export async function login(req, res) {
   try {
-    if (!req.query || !req.query.name || !req.query.password) {
+    if (!req.body || !req.body.name || !req.body.password) {
       throw new Err(400, "bad request");
     }
 
-    const name = req.query.name;
-    const pw = req.query.password;
+    const name = req.body.name;
+    const pw = req.body.password;
 
     const user = await User.findOne({ where: { name: name } });
     if (!user) {
@@ -60,6 +60,19 @@ export async function login(req, res) {
   } catch (e) {
     res.status(e.code).json({ error: e.error });
   }
+}
+
+export async function getUser(req, res) {
+  if (!req.query || !req.query.userId) {
+    throw new Err(400, "bad request");
+  }
+
+  const user = await User.findByPk(req.user);
+  if (!user) {
+    throw new Err(404, "user not found");
+  }
+
+  res.status(200).json(user);
 }
 
 export async function modify(req, res) {
