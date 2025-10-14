@@ -116,9 +116,7 @@ export async function follow(req, res) {
       throw new Err(400, "invalid username");
     }
 
-    const user = await User.findOne({
-      where: { id: req.user },
-    });
+    const user = await User.findByPk(req.user);
     if (user.id == userToFollow.id) {
       throw new Err(400, "self follow");
     }
@@ -150,9 +148,7 @@ export async function unfollow(req, res) {
       throw new Err(400, "invalid username");
     }
 
-    const user = await User.findOne({
-      where: { id: req.user },
-    });
+    const user = await User.findByPk(req.user);
     if (user.id == userToUnfollow.id) {
       throw new Err(400, "self unfollow");
     }

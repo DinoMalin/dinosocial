@@ -64,5 +64,4 @@ DB:
   - Creation_date -> date
 
 TODO:
-- remplacer les findOne where id: XXX par findbyPk
 - validators pour eviter la repetition de conditions
