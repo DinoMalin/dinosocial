@@ -66,30 +66,38 @@ TEST='{"name": "dinomalin", "password": "thisisapw!6"}'
 EXPECT='{"error":"username already exist"}'
 test 10 user "$TEST" "$EXPECT"
 
-## LOGIN - GET /user
+## LOGIN - POST /login
 
 # 11: basic (%21 == '!')
+TEST='{"name": "dinomalin", "password": "thisisapw!6"}'
 EXPECT="200"
-test 11 "user?name=dinomalin&password=thisisapw%216" "" "$EXPECT"
+test 11 login "$TEST" "$EXPECT"
 
 # 12-14: bad request
 EXPECT='{"error":"bad request"}'
-test 12 "user" "" "$EXPECT"
-test 13 "user?password=thisisapw%216" "" "$EXPECT"
-test 14 "user?name=dinomalin" "" "$EXPECT"
+
+TEST='{}'
+test 12 login "$TEST" "$EXPECT"
+
+TEST='{"password": "thisisapw!6"}'
+test 13 login "$TEST" "$EXPECT"
+
+TEST='{"name": "dinomalin"}'
+test 14 login "$TEST" "$EXPECT"
 
 # 15: invalid username
+TEST='{"name": "dino", "password": "thisisapw!6"}'
 EXPECT='{"error":"invalid username"}'
-test 15 "user?name=dino&password=thisisapw%216" "" "$EXPECT"
+test 15 login "$TEST" "$EXPECT"
 
 # 16: invalid password
+TEST='{"name": "dinomalin", "password": "notthegoodpassword"}'
 EXPECT='{"error":"invalid password"}'
-test 16 "user?name=dinomalin&password=thisisapw" "" "$EXPECT"
+test 16 login "$TEST" "$EXPECT"
 
 ## MODIFY - PATCH /user
 
-TOKEN=$(curl 'api:3000/user?name=dinomalin&password=thisisapw%216' -s -H "Content-Type:application/json" | jq -r .token)
-echo $TOKEN
+TOKEN=$(curl 'api:3000/login' -s -H "Content-Type:application/json" -d '{"name": "dinomalin", "password": "thisisapw!6"}' | jq -r .token)
 
 # 17: basic
 TEST='{"name": "dinomalin", "bio": "dinomalining...", "avatar": "placeholder_link", "banner": "placeholder_link"}'
